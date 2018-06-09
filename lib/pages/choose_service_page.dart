@@ -3,6 +3,8 @@ import 'dart:io' as io;
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
+import 'package:youtrackr/widgets/background.dart';
+
 class ChooseServicePage extends StatefulWidget {
   static String tag = 'choose-serevice-page';
 
@@ -16,9 +18,7 @@ class _ChooseServicePageState extends State<ChooseServicePage> {
     Widget build(BuildContext context) {
 
       return new Scaffold(
-        body: Center(
-          child: Text('Choose Service Page'),
-        ),
+        body: Stack(children: <Widget>[background(context)])
       );
     }
 }
