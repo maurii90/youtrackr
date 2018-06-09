@@ -5,6 +5,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # Package to follow the react flux pattern
+  flutter_flux:
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
