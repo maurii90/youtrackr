@@ -1,38 +1,58 @@
 import 'dart:async';
-import 'dart:io' as io;
-import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_flux/flutter_flux.dart';
 
 import 'package:youtrackr/stores/stores.dart';
 import 'package:youtrackr/widgets/background.dart';
-import 'package:youtrackr/widgets/progress_indicator.dart';
+import 'package:youtrackr/widgets/progress_spinner.dart';
+import 'package:youtrackr/utils/network_util.dart';
+import 'package:youtrackr/utils/rest_urls.dart';
 
-class ChooseServicePage extends StatefulWidget {
+
+// TODO: try to find a good solution like a model
+class _ServiceData {
+  String serviceUrl = '';
+}
+
+class ServicePage extends StatefulWidget {
   static String tag = 'choose-serevice-page';
 
   @override
-  _ChooseServicePageState createState() => new _ChooseServicePageState();
+  _ServicePageState createState() => new _ServicePageState();
 }
 
-class _ChooseServicePageState extends State<ChooseServicePage>
-  with StoreWatcherMixin<ChooseServicePage> {
+class _ServicePageState extends State<ServicePage>
+  with StoreWatcherMixin<ServicePage> {
 
-  LoadingStore loadingStore;
+  ApplicationStore applicationStore;
+  _ServiceData _serviceData = new _ServiceData();
+  final formKey = new GlobalKey<FormState>();
+  NetworkUtil _networkUtil = new NetworkUtil();
 
   @override
   void initState() {
     super.initState();
 
-    loadingStore = listenToStore(loadingStoreToken);
+    applicationStore = listenToStore(applicationStoreToken);
   }
 
-  void mockedRequest() {
-    setLoading(); // LoadingStore action
-    new Future.delayed(
-      const Duration(seconds: 3), 
-      unsetLoading // LoadingStore action
-    );
+  Future<bool> fetchAndSaveServiceData () async {
+    final form = formKey.currentState;
+
+      if (form.validate()) {
+        form.save();
+
+        return await _networkUtil.get(_serviceData.serviceUrl + FETCH_SERVICE_INFORMATION_URL)
+        .then((dynamic res) {
+          setServiceUrl(_serviceData.serviceUrl);
+          setServiceSecret(res['mobile']['serviceSecret']);
+          setServiceId(res['mobile']['serviceId']);
+          setRingServiceId(res['ring']['serviceId']);
+          setServiceHubUrl(res['ring']['url']);
+          return true;
+        });
+      }
+      return false;
   }
 
   final serviceInputIcon = /*networkError*/ false ? 
@@ -41,11 +61,13 @@ class _ChooseServicePageState extends State<ChooseServicePage>
 
   Widget serviceUrlInput(BuildContext context) {
     return TextFormField(
-      // initialValue: 'wrer',
       keyboardType: TextInputType.url,
       autofocus: false,
-      //validator: (val) => _validateServiceUrl(val),
-      // controller: _controller,
+      validator: (val) {
+        if (val.isEmpty) {
+          return 'Please enter a YouTrack URL';
+        }
+      },
       style: TextStyle(color: Colors.white70),
       textAlign: TextAlign.center,
       decoration: InputDecoration(
@@ -58,8 +80,11 @@ class _ChooseServicePageState extends State<ChooseServicePage>
             Radius.circular(1.0)
           )
         ),
-        // errorText: networkError ? 'Network error. Please try again.' : null,
+        errorText: applicationStore.networkError ? 'Network error. Please try again.' : null,
       ),
+      onSaved: (String value) {
+        _serviceData.serviceUrl = value;
+      },
     );
   } 
 
@@ -80,8 +105,14 @@ class _ChooseServicePageState extends State<ChooseServicePage>
           splashColor: Colors.purpleAccent,
           textColor: Colors.white70,
           child: Text('Next'),
-          onPressed: mockedRequest,
-          //onPressed: _handleServiceInformation,
+          onPressed: () async {
+            setLoading();
+            if (await fetchAndSaveServiceData()) {
+              // TODO: Save service data in local storage
+              // Navigator.of(context).pushNamed(LoginPage.tag);
+            }
+            unsetLoading();
+          },
         )
       )
     );
@@ -97,7 +128,7 @@ class _ChooseServicePageState extends State<ChooseServicePage>
           Container(
             margin: EdgeInsets.all(25.0),
             child: Form(
-              //key: formKey,
+              key: formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -109,7 +140,7 @@ class _ChooseServicePageState extends State<ChooseServicePage>
               ),
             ),
           ),
-          progressIndicator(loadingStore.isLoading)
+          ProgressSpinner()
         ])
       );
     }

@@ -1,6 +1,6 @@
 import 'routes.dart';
 import 'package:flutter/material.dart';
-import 'package:youtrackr/pages/choose_service_page.dart';
+import 'package:youtrackr/pages/service_page.dart';
 
 void main() => runApp(new MyApp());
 
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
       theme: new ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: new ChooseServicePage(),
+      home: new ServicePage(),
       routes: routes,
     );
   }
