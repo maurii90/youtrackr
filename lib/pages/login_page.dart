@@ -9,7 +9,7 @@ import 'package:youtrackr/stores/stores.dart';
 import 'package:youtrackr/utils/network_util.dart';
 import 'package:youtrackr/utils/rest_urls.dart';
 import 'package:youtrackr/pages/service_page.dart';
-import 'package:youtrackr/pages/menu_page.dart';
+import 'package:youtrackr/pages/home_page.dart';
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
@@ -154,7 +154,7 @@ class _LoginPageState extends State<LoginPage>
             if (await fetchAndSaveAccessToken()) {
               setLoggedIn(true);
               // TODO: Save Token in local storage 
-              Navigator.of(context).pushNamed(MenuPage.tag);
+              Navigator.of(context).pushNamed(HomePage.tag);
             }
           },
           child: new Text('Log In'),
