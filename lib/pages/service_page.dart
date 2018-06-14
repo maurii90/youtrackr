@@ -7,6 +7,7 @@ import 'package:youtrackr/widgets/background.dart';
 import 'package:youtrackr/widgets/progress_spinner.dart';
 import 'package:youtrackr/utils/network_util.dart';
 import 'package:youtrackr/utils/rest_urls.dart';
+import 'package:youtrackr/pages/login_page.dart';
 
 
 // TODO: try to find a good solution like a model
@@ -15,7 +16,7 @@ class _ServiceData {
 }
 
 class ServicePage extends StatefulWidget {
-  static String tag = 'choose-serevice-page';
+  static String tag = 'serevice-page';
 
   @override
   _ServicePageState createState() => new _ServicePageState();
@@ -25,6 +26,7 @@ class _ServicePageState extends State<ServicePage>
   with StoreWatcherMixin<ServicePage> {
 
   ApplicationStore applicationStore;
+  ServiceStore serviceStore;
   _ServiceData _serviceData = new _ServiceData();
   final formKey = new GlobalKey<FormState>();
   NetworkUtil _networkUtil = new NetworkUtil();
@@ -34,6 +36,7 @@ class _ServicePageState extends State<ServicePage>
     super.initState();
 
     applicationStore = listenToStore(applicationStoreToken);
+    serviceStore = listenToStore(serviceStoreToken);
   }
 
   Future<bool> fetchAndSaveServiceData () async {
@@ -109,7 +112,7 @@ class _ServicePageState extends State<ServicePage>
             setLoading();
             if (await fetchAndSaveServiceData()) {
               // TODO: Save service data in local storage
-              // Navigator.of(context).pushNamed(LoginPage.tag);
+              Navigator.of(context).pushNamed(LoginPage.tag);
             }
             unsetLoading();
           },
@@ -124,7 +127,7 @@ class _ServicePageState extends State<ServicePage>
       return Scaffold(
         resizeToAvoidBottomPadding: false,
         body: Stack(children: <Widget>[
-          background(context),
+          background(),
           Container(
             margin: EdgeInsets.all(25.0),
             child: Form(

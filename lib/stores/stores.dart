@@ -22,12 +22,12 @@ class ApplicationStore extends Store {
   bool get networkError => _networkError;
 }
 
-final StoreToken applicationStoreToken = new StoreToken(new ApplicationStore());
-
 final Action<bool> setLoading = new Action<bool>();
 final Action<bool> unsetLoading = new Action<bool>();
 
 final Action<bool> setNetworkError = new Action<bool>(); 
+
+final StoreToken applicationStoreToken = new StoreToken(new ApplicationStore());
 
 class ServiceStore extends Store {
   ServiceStore() {
@@ -70,3 +70,35 @@ final Action<String> setServiceId = new Action<String>();
 final Action<String> setServiceSecret = new Action<String>();
 final Action<String> setRingServiceId = new Action<String>();
 final Action<String> setServiceHubUrl = new Action<String>();
+
+final StoreToken serviceStoreToken = new StoreToken(new ServiceStore());
+
+class UserStore extends ServiceStore {
+  UserStore() {
+    triggerOnAction(setLoggedIn, (bool value){
+      _loggedIn = value;
+    });
+
+    triggerOnAction(setTokenType, (String value){
+      _tokenType = value;
+    });
+
+    triggerOnAction(setAccessToken, (String value){
+      _accessToken = value;
+    });
+  }
+
+  bool _loggedIn = false;
+  String _accessToken = '';
+  String _tokenType = '';
+
+  bool get isLoggedIn => _loggedIn;
+  String get authToken => _accessToken;
+  String get tokenType => _tokenType;
+}
+
+final Action<bool> setLoggedIn = new Action<bool>();
+final Action<String> setAccessToken = new Action<String>();
+final Action<String> setTokenType = new Action<String>();
+
+final StoreToken userStoreToken = new StoreToken(new UserStore());

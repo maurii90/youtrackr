@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget background(BuildContext context) {
+Widget background() {
   return Stack(
     children: <Widget>[
       Container(
