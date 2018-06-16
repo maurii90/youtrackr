@@ -8,6 +8,14 @@ import 'package:youtrackr/stores/stores.dart';
 import 'package:youtrackr/utils/network_util.dart';
 import 'package:youtrackr/utils/rest_urls.dart';
 
+class WorkItem {
+  WorkItem(this.issueName, this.description, this.worktype, this.duration);
+  String issueName;
+  String description;
+  String worktype;
+  int duration;
+}
+
 class TrackedTimePage extends StatefulWidget {
 
   @override
@@ -17,15 +25,17 @@ class TrackedTimePage extends StatefulWidget {
 class _TrackedTimePageState extends State<TrackedTimePage>
   with StoreWatcherMixin<TrackedTimePage> {
 
+  ApplicationStore applicationStore;
   ServiceStore serviceStore;
   UserStore userStore;
   NetworkUtil _networkUtil = new NetworkUtil();
   var now = new DateTime.now();
   var issuesList = [];
-  var workItemsList = [];
+  var workItemsList = new List<WorkItem>();
 
   @override
   void initState() {
+    applicationStore = listenToStore(applicationStoreToken);
     serviceStore = listenToStore(serviceStoreToken);
     userStore = listenToStore(userStoreToken);
     fetchAndSaveAccessToken();
@@ -63,34 +73,92 @@ class _TrackedTimePageState extends State<TrackedTimePage>
         ).then((workItems) {
           for(var workItem in workItems) {
             if(workItem['author']['login'] == userStore.username &&
-              workItem['date'] == new DateTime(now.year, now.month, now.day, 0, 0, 0).millisecondsSinceEpoch) {
-                workItemsList.add({
-                  'issueName': issue,
-                  'description': workItem['description'],
-                  'duration': workItem['duration'],
-                  'worktype': workItem['worktype']['name'],
-                });
+              workItem['date'] == new DateTime(now.year, now.month, now.day-1, 0, 0, 0).millisecondsSinceEpoch) {
+                workItemsList.add(new WorkItem(
+                  issue, 
+                  workItem['description'], 
+                  workItem['worktype']['name'], 
+                  workItem['duration']
+                ));
             }
           }
+          print(workItemsList.toString());
         })
       );
     }
     await Future.wait(futures.map((f) => f));
 
+    setWorkItems(workItemsList);
     unsetLoading();
   }
     
   @override
     Widget build(BuildContext context) {
 
-      return new Scaffold(
+      return Scaffold(
         resizeToAvoidBottomPadding: false,
-        body: new Stack(
+        body: Stack(
           children: <Widget>[
             background(),
-            Center(
-              child: Text('Tracked Time Page', style: TextStyle(color: Colors.white70)),
+            Text('Today:', style: TextStyle(color: Colors.white70, fontSize: 18.0)),
+            ListView(
+              children:
+              applicationStore.workItemsList.map((workItem) {
+                return Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        children: <Widget>[
+                          Text(
+                            (workItem.duration/60).toString() + 'h',
+                            style: TextStyle(color: Colors.white70),
+                            textAlign: TextAlign.left,
+                          )
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: new Column(
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              Column(
+                                children: <Widget>[
+                                  Text(
+                                    workItem.worktype,
+                                    style: TextStyle(color: Colors.white70)
+                                  )
+                                ],
+                              ),
+                              Column(
+                                children: <Widget>[
+                                  Text(
+                                    workItem.issueName,
+                                    style: TextStyle(color: Colors.white70)
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Text(
+                                workItem.description,
+                                style: TextStyle(color: Colors.white70)
+                              )
+                            ],
+                          )                 
+                        ],
+                      ),
+                    )
+                    // new Text(workItem.issueName, style: TextStyle(color: Colors.white70))
+                  ],
+                );
+              }).toList(),
             ),
+            // Center(
+            //   child: Text('Tracked Time Page', style: TextStyle(color: Colors.white70)),
+            // ),
             ProgressSpinner()
           ],
         ),

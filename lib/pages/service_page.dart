@@ -64,6 +64,7 @@ class _ServicePageState extends State<ServicePage>
 
   Widget serviceUrlInput(BuildContext context) {
     return TextFormField(
+      initialValue: 'https://project.comsolit.net',
       keyboardType: TextInputType.url,
       autofocus: false,
       validator: (val) {

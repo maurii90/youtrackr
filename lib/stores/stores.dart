@@ -13,19 +13,25 @@ class ApplicationStore extends Store {
     triggerOnAction(setNetworkError, (bool value) {
       _networkError = true;
     });
+
+    triggerOnAction(setWorkItems, (List value) {
+      _workItemsList = value;
+    });
   }
 
   bool _isLoading = false;
   bool _networkError = false;
+  List _workItemsList = [];
 
   bool get isLoading => _isLoading;
   bool get networkError => _networkError;
+  List get workItemsList => _workItemsList;
 }
 
 final Action<bool> setLoading = new Action<bool>();
 final Action<bool> unsetLoading = new Action<bool>();
-
 final Action<bool> setNetworkError = new Action<bool>(); 
+final Action<List> setWorkItems = new Action<List>();
 
 final StoreToken applicationStoreToken = new StoreToken(new ApplicationStore());
 
