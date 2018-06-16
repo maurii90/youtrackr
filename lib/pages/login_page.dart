@@ -31,6 +31,7 @@ class _LoginPageState extends State<LoginPage>
   bool isLoading = false;
   ApplicationStore applicationStore;
   ServiceStore serviceStore;
+  UserStore userStore;
   NetworkUtil _networkUtil = new NetworkUtil();
 
   @override
@@ -38,6 +39,8 @@ class _LoginPageState extends State<LoginPage>
 
     applicationStore = listenToStore(applicationStoreToken);
     serviceStore = listenToStore(serviceStoreToken);
+    userStore = listenToStore(userStoreToken);
+
     super.initState();
   }
 
@@ -58,7 +61,7 @@ class _LoginPageState extends State<LoginPage>
       form.save();
 
       return await _networkUtil.post(
-        serviceStore.serviceHubUrl + URL_GET_AUTH_TOKEN, 
+        serviceStore.serviceHubUrl + REQUEST_AUTH_TOKEN_URL, 
         headers: createBasicAuthHeader(serviceStore.serviceId, serviceStore.serviceSecret), 
         body: {
           'username': loginData.username, 
@@ -153,6 +156,7 @@ class _LoginPageState extends State<LoginPage>
           onPressed: () async {
             if (await fetchAndSaveAccessToken()) {
               setLoggedIn(true);
+              setUsername(loginData.username);
               // TODO: Save Token in local storage 
               Navigator.of(context).pushNamed(HomePage.tag);
             }

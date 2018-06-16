@@ -86,19 +86,26 @@ class UserStore extends ServiceStore {
     triggerOnAction(setAccessToken, (String value){
       _accessToken = value;
     });
+
+    triggerOnAction(setUsername, (String value){
+      _username = value;
+    });
   }
 
   bool _loggedIn = false;
   String _accessToken = '';
   String _tokenType = '';
+  String _username = '';
 
   bool get isLoggedIn => _loggedIn;
   String get authToken => _accessToken;
   String get tokenType => _tokenType;
+  String get username => _username;
 }
 
 final Action<bool> setLoggedIn = new Action<bool>();
 final Action<String> setAccessToken = new Action<String>();
 final Action<String> setTokenType = new Action<String>();
+final Action<String> setUsername = new Action<String>();
 
 final StoreToken userStoreToken = new StoreToken(new UserStore());
