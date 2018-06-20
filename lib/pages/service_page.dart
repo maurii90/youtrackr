@@ -23,7 +23,10 @@ class ServicePage extends StatefulWidget {
 }
 
 class _ServicePageState extends State<ServicePage>
-  with StoreWatcherMixin<ServicePage> {
+  with StoreWatcherMixin<ServicePage>, SingleTickerProviderStateMixin<ServicePage> {
+
+  AnimationController controller;
+  Animation animation;
 
   ApplicationStore applicationStore;
   ServiceStore serviceStore;
@@ -37,6 +40,12 @@ class _ServicePageState extends State<ServicePage>
 
     applicationStore = listenToStore(applicationStoreToken);
     serviceStore = listenToStore(serviceStoreToken);
+
+    controller = new AnimationController(duration: Duration(milliseconds: 3000), vsync: this);
+    animation = new CurvedAnimation(parent: controller, curve: Curves.elasticOut);
+    animation.addListener((){
+      setState(() {});
+    });
   }
 
   Future<bool> fetchAndSaveServiceData () async {
@@ -93,29 +102,35 @@ class _ServicePageState extends State<ServicePage>
 
   Widget chooseServiceButton(BuildContext context) {
     return Container(
+      width: 200.0 - (animation.value * 150),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        color: Colors.red,
+        borderRadius: BorderRadius.all(Radius.circular(25.0)),
         border: Border.all(
           color: Colors.white70,
           width: 1.0,
         )
       ),
       child: Material(
-        borderRadius: BorderRadius. all(Radius.circular(10.0)),
+        borderRadius: BorderRadius. all(Radius.circular(250.0)),
         color: Colors.transparent,
         child: MaterialButton(
+          padding: EdgeInsets.all(0.0),
           highlightColor: Colors.black.withOpacity(0.0),
           splashColor: Colors.purpleAccent,
           textColor: Colors.white70,
-          child: Text('Next'),
-          onPressed: () async {
-            setLoading();
-            if (await fetchAndSaveServiceData()) {
-              // TODO: Save service data in local storage
-              Navigator.of(context).pushNamed(LoginPage.tag);
-            }
-            unsetLoading();
+          child: animation.value < 0.5 ? Text('Next') : CircularProgressIndicator(),
+          onPressed: () {
+            controller.forward();
           },
+          // onPressed: () async {
+          //   setLoading();
+          //   if (await fetchAndSaveServiceData()) {
+          //     // TODO: Save service data in local storage
+          //     Navigator.of(context).pushNamed(LoginPage.tag);
+          //   }
+          //   unsetLoading();
+          // },
         )
       )
     );
@@ -138,10 +153,21 @@ class _ServicePageState extends State<ServicePage>
                 children: <Widget>[
                   SizedBox(height: 50.0), //Application logo placeholder
                   serviceUrlInput(context),
-                  chooseServiceButton(context)
+                  // chooseServiceButton(context)
                 ],
               ),
             ),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  chooseServiceButton(context),
+                ],
+              ),
+            ],
           ),
           ProgressSpinner()
         ])
