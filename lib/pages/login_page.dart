@@ -67,7 +67,7 @@ class _LoginPageState extends State<LoginPage>
           'username': loginData.username, 
           'password': loginData.password, 
           'grant_type':'password',
-          'scope': serviceStore.ringServiceId
+          'scope': '0-0-0-0-0' + ' ' + serviceStore.ringServiceId
         }
       ).then((dynamic res) {
         setAccessToken(res['access_token']);

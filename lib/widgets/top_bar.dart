@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_flux/flutter_flux.dart';
 
 import 'package:youtrackr/stores/stores.dart';
 
@@ -7,13 +8,18 @@ class TopBar extends StatefulWidget {
   _TopBarState createState() => new _TopBarState();
 }
 
-class _TopBarState extends State<TopBar> {
+class _TopBarState extends State<TopBar> 
+  with StoreWatcherMixin<TopBar>{
 
   ApplicationStore applicationStore;
+  UserStore userStore;
 
   @override
   void initState() {
     super.initState();
+
+    applicationStore = listenToStore(applicationStoreToken);
+    userStore = listenToStore(userStoreToken);
   }
 
   @override
@@ -28,23 +34,15 @@ class _TopBarState extends State<TopBar> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           // Leading
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Material(
-                borderRadius: BorderRadius. all(Radius.circular(25.0)),
-                color: Colors.transparent,
-                child: IconButton(
-                  iconSize: 18.0,
-                  color: Colors.white70,
-                  splashColor: Colors.purpleAccent,
-                  icon: Icon(Icons.account_circle ),
-                  onPressed: (){},
-                ),
-              )          
-            ],
+          IconButton(
+            padding: EdgeInsets.all(10.0),
+            iconSize: 18.0,
+            color: Colors.white70,
+            splashColor: Colors.purpleAccent,
+            icon: userStore.avatarUrl.isNotEmpty ? Image.network(userStore.avatarUrl) : Container(),
+            onPressed: openDrawer,
           ),
-
+ 
           // Title
           Column(
             mainAxisAlignment: MainAxisAlignment.center,

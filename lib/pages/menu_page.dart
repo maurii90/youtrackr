@@ -16,11 +16,42 @@ class MenuPage extends StatefulWidget {
 class _MenuPageState extends State<MenuPage>
   with StoreWatcherMixin<MenuPage> {
     
+  ApplicationStore applicationStore;
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  @override
+    void initState() {
+      applicationStore = listenToStore(applicationStoreToken);
+      setCurrentScaffold(_scaffoldKey);
+      super.initState();
+    }
+
   @override
     Widget build(BuildContext context) {
 
       return Scaffold(
+        key: _scaffoldKey,
         resizeToAvoidBottomPadding: false,
+        drawer: new Drawer(
+          child: new ListView(
+            children: <Widget> [
+              new DrawerHeader(child: new Text('Header'),),
+              new ListTile(
+                title: new Text('First Menu Item'),
+                onTap: () {},
+              ),
+              new ListTile(
+                title: new Text('Second Menu Item'),
+                onTap: () {},
+              ),
+              new Divider(),
+              new ListTile(
+                title: new Text('About'),
+                onTap: () {},
+              ),
+            ],
+          )
+        ),
         body: Stack(
           children: <Widget>[
             background(),

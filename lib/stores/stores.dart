@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_flux/flutter_flux.dart';
 
 class ApplicationStore extends Store {
@@ -13,10 +14,19 @@ class ApplicationStore extends Store {
     triggerOnAction(setNetworkError, (bool value) {
       _networkError = true;
     });
+
+    triggerOnAction(setCurrentScaffold, (GlobalKey value) {
+      _currentScaffold = value;
+    });
+
+    triggerOnAction(openDrawer, (bool value) {
+      _currentScaffold.currentState.openDrawer();
+    });
   }
 
   bool _isLoading = false;
   bool _networkError = false;
+  GlobalKey<ScaffoldState> _currentScaffold;
 
   bool get isLoading => _isLoading;
   bool get networkError => _networkError;
@@ -26,6 +36,9 @@ final Action<bool> setLoading = new Action<bool>();
 final Action<bool> unsetLoading = new Action<bool>();
 
 final Action<bool> setNetworkError = new Action<bool>(); 
+// Maybe refactor in UIStore
+final Action<GlobalKey> setCurrentScaffold = new Action<GlobalKey>();
+final Action<bool> openDrawer = new Action();
 
 final StoreToken applicationStoreToken = new StoreToken(new ApplicationStore());
 
@@ -90,6 +103,14 @@ class UserStore extends ServiceStore {
     triggerOnAction(setUsername, (String value){
       _username = value;
     });
+
+    triggerOnAction(setFullName, (String value){
+      _fullName = value;
+    });
+
+    triggerOnAction(setAvatarUrl, (String value){
+      _avatarUrl = value;
+    });
   }
 
   bool _loggedIn = false;
@@ -97,15 +118,24 @@ class UserStore extends ServiceStore {
   String _tokenType = '';
   String _username = '';
 
+  String _fullName = '';
+  String _avatarUrl = '';
+
   bool get isLoggedIn => _loggedIn;
   String get authToken => _accessToken;
   String get tokenType => _tokenType;
   String get username => _username;
+  
+  String get fullName => _fullName;
+  String get avatarUrl => _avatarUrl;
 }
 
 final Action<bool> setLoggedIn = new Action<bool>();
 final Action<String> setAccessToken = new Action<String>();
 final Action<String> setTokenType = new Action<String>();
 final Action<String> setUsername = new Action<String>();
+
+final Action<String> setFullName = new Action<String>();
+final Action<String> setAvatarUrl = new Action<String>();
 
 final StoreToken userStoreToken = new StoreToken(new UserStore());
