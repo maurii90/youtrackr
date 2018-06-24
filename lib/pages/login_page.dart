@@ -146,7 +146,7 @@ class _LoginPageState extends State<LoginPage>
         )
       ),
       child: new Material(
-        borderRadius: new BorderRadius. all(new Radius.circular(10.0)),
+        borderRadius: new BorderRadius.all(new Radius.circular(10.0)),
         color: Colors.transparent,
         child: new MaterialButton(
           highlightColor: Colors.black.withOpacity(0.0),

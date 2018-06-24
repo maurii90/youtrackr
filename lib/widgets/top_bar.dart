@@ -34,15 +34,18 @@ class _TopBarState extends State<TopBar>
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           // Leading
-          IconButton(
-            padding: EdgeInsets.all(10.0),
-            iconSize: 18.0,
-            color: Colors.white70,
-            splashColor: Colors.purpleAccent,
-            icon: userStore.avatarUrl.isNotEmpty ? Image.network(userStore.avatarUrl) : Container(),
-            onPressed: openDrawer,
+          GestureDetector(
+            onTap: openDrawer,
+            child: Container(
+              constraints: BoxConstraints.tight(Size(50.0, 50.0)),
+              padding: EdgeInsets.all(12.0),
+              child: CircleAvatar(
+                backgroundColor: Colors.transparent,
+                backgroundImage: userStore.avatarUrl.isNotEmpty ? NetworkImage(userStore.avatarUrl) : null,
+              ),
+            )
           ),
- 
+
           // Title
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -61,16 +64,19 @@ class _TopBarState extends State<TopBar>
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Material(
-
-                borderRadius: BorderRadius. all(Radius.circular(25.0)),
-                color: Colors.transparent,
-                child: IconButton(
-                  iconSize: 18.0,
-                  color: Colors.white70,
-                  splashColor: Colors.purpleAccent,
-                  icon: Icon(Icons.settings),
-                  onPressed: (){},
+              Container(
+                padding: EdgeInsets.all(8.0),
+                constraints: BoxConstraints.tight(Size(50.0, 50.0)),
+                child: Material(
+                  borderRadius: BorderRadius. all(Radius.circular(25.0)),
+                  color: Colors.transparent,
+                  child: IconButton(
+                    iconSize: 18.0,
+                    color: Colors.white70,
+                    splashColor: Colors.purpleAccent,
+                    icon: Icon(Icons.settings),
+                    onPressed: (){},
+                  ),
                 ),
               )          
             ],
