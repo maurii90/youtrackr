@@ -26,9 +26,17 @@ class _TopBarState extends State<TopBar>
   Widget build(BuildContext context) {
 
     return Container(
-      // color: Colors.yellowAccent,
-      height: 50.0,
-      margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+      decoration: BoxDecoration(
+        color: Color.fromRGBO(0, 0, 0, 0.5),
+        border: Border(
+          bottom: BorderSide(
+            color: Colors.purpleAccent,
+            width: 1.0
+          )
+        )
+      ),
+      height: 50.0 + MediaQuery.of(context).padding.top,
+      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -37,7 +45,7 @@ class _TopBarState extends State<TopBar>
           GestureDetector(
             onTap: openDrawer,
             child: Container(
-              constraints: BoxConstraints.tight(Size(50.0, 50.0)),
+              constraints: BoxConstraints.tight(Size(48.0, 48.0)),
               padding: EdgeInsets.all(12.0),
               child: CircleAvatar(
                 backgroundColor: Colors.transparent,
@@ -66,7 +74,7 @@ class _TopBarState extends State<TopBar>
             children: <Widget>[
               Container(
                 padding: EdgeInsets.all(8.0),
-                constraints: BoxConstraints.tight(Size(50.0, 50.0)),
+                constraints: BoxConstraints.tight(Size(48.0, 48.0)),
                 child: Material(
                   borderRadius: BorderRadius. all(Radius.circular(25.0)),
                   color: Colors.transparent,

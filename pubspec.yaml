@@ -34,6 +34,10 @@ flutter:
   #  - images/a_dot_ham.jpeg
   assets:
     - assets/images/background.jpeg
+    - assets/icons/icon-timer.png
+    - assets/icons/icon-list-tickets.png
+    - assets/icons/icon-quick-record.png
+    - assets/icons/icon-sprint-tickets.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.
